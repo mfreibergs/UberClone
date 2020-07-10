@@ -7,14 +7,18 @@
 //
 
 import UIKit
+import Firebase
+import Geofirestore
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        FirebaseApp.configure()
+        
+//        let settings = DB_REF.settings
+//        settings.areTimestampsInSnapshotsEnabled = true
+//        DB_REF.settings = settings
         return true
     }
 
