@@ -109,6 +109,8 @@ class SignUpController: UIViewController {
             }
             REF_USERS.document(uid).setData(values) { (err) in
                 if let err = err { print("DEBUG: Error writing documents: \(err)"); return }
+                let controller = HomeController()
+                controller.fetchUserData()
                 self.dismiss(animated: true, completion: nil)
             }
         }

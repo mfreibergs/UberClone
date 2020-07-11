@@ -55,8 +55,17 @@ class HomeController: UIViewController {
                 fetchDrivers()
                 configureInputActivationView()
             } else {
-                Service.shared.observeTrips()
+                observeTrips()
             }
+        }
+    }
+    
+    private var trip: Trip? {
+        didSet {
+            guard let trip = trip else { return }
+            let controller = PickupController(trip: trip)
+            controller.modalPresentationStyle = .fullScreen
+            self.present(controller, animated: true)
         }
     }
     
@@ -74,10 +83,8 @@ class HomeController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        checkIfUserIsLoggedIn()
-        fetchUserData()
-        print("DEBUG: View Will Appear")
+        guard let trip = trip else { return }
+        print("DEBUG: Trip state is \(trip.state)")
     }
     //MARK: - API
     
@@ -111,6 +118,13 @@ class HomeController: UIViewController {
         }
     }
     
+    func observeTrips() {
+        Service.shared.observeTrips { trip in
+            print("DEBUG: got a new trip")
+            self.trip = trip
+        }
+    }
+    
     func checkIfUserIsLoggedIn() {
         if Auth.auth().currentUser == nil {
             DispatchQueue.main.async {
@@ -121,6 +135,7 @@ class HomeController: UIViewController {
             print("DEBUG: User not logged in")
         } else {
             configureUI()
+            fetchUserData()
         }
     }
     

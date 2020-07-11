@@ -50,17 +50,26 @@ struct Service {
         let pickupArray = [pickupCoordinates.latitude, pickupCoordinates.longitude]
         let destinationArray = [destinationCoordinates.latitude, destinationCoordinates.longitude]
         
-        let values = ["pickupCoordinates": pickupArray, "destinationCoordinates": destinationArray,
-        "state": TripState.requested.rawValue] as [String: Any]
+        let values = ["pickupCoordinates": pickupArray,
+                      "destinationCoordinates": destinationArray,
+                      "state": TripState.requested.rawValue] as [String: Any]
         
         REF_TRIPS.document(uid).setData(values, completion: completion)
     }
     
-    func observeTrips() {
+    func observeTrips(completion: @escaping(Trip) -> Void) {
         REF_TRIPS.addSnapshotListener { (snapshot, error) in
             for document in snapshot!.documents {
-                print("DEBUG: \(document.data())")
+                let uid = document.documentID
+                let trip = Trip(passengerUid: uid, dictionary: document.data())
+                completion(trip)
             }
         }
+    }
+    
+    func acceptTrip(trip: Trip, completion: ((Error?) -> Void)?) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let values = ["driverUid": uid, "state": TripState.accepted.rawValue] as [String: Any]
+        REF_TRIPS.document(trip.passengerUid).updateData(values, completion: completion)
     }
 }
