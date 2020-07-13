@@ -27,6 +27,7 @@
 		F880A04A24A6310000761CAB /* DriverAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F880A04924A6310000761CAB /* DriverAnnotation.swift */; };
 		F880A04C24ACA5A400761CAB /* RideActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F880A04B24ACA5A400761CAB /* RideActionView.swift */; };
 		F880A04E24ADBB5F00761CAB /* Trip.swift in Sources */ = {isa = PBXBuildFile; fileRef = F880A04D24ADBB5F00761CAB /* Trip.swift */; };
+		F880A05024B9E48B00761CAB /* PickupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F880A04F24B9E48B00761CAB /* PickupController.swift */; };
 		F8CDD8FE249B5A2A00728F49 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CDD8FD249B5A2A00728F49 /* HomeController.swift */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +56,7 @@
 		F880A04924A6310000761CAB /* DriverAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverAnnotation.swift; sourceTree = "<group>"; };
 		F880A04B24ACA5A400761CAB /* RideActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideActionView.swift; sourceTree = "<group>"; };
 		F880A04D24ADBB5F00761CAB /* Trip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trip.swift; sourceTree = "<group>"; };
+		F880A04F24B9E48B00761CAB /* PickupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickupController.swift; sourceTree = "<group>"; };
 		F8CDD8FD249B5A2A00728F49 /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -147,6 +149,7 @@
 				F86B311A24953D4100B74D3C /* LoginController.swift */,
 				F86B311E2496B06400B74D3C /* SignUpController.swift */,
 				F8CDD8FD249B5A2A00728F49 /* HomeController.swift */,
+				F880A04F24B9E48B00761CAB /* PickupController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -312,6 +315,7 @@
 				F8CDD8FE249B5A2A00728F49 /* HomeController.swift in Sources */,
 				F880A040249E2FE200761CAB /* LocationInputView.swift in Sources */,
 				F880A04E24ADBB5F00761CAB /* Trip.swift in Sources */,
+				F880A05024B9E48B00761CAB /* PickupController.swift in Sources */,
 				F880A04A24A6310000761CAB /* DriverAnnotation.swift in Sources */,
 				F86B310224953B5C00B74D3C /* AppDelegate.swift in Sources */,
 				F86B311B24953D4100B74D3C /* LoginController.swift in Sources */,

@@ -59,11 +59,28 @@ struct Service {
     
     func observeTrips(completion: @escaping(Trip) -> Void) {
         REF_TRIPS.addSnapshotListener { (snapshot, error) in
-            for document in snapshot!.documents {
-                let uid = document.documentID
-                let trip = Trip(passengerUid: uid, dictionary: document.data())
-                completion(trip)
-            }
+            snapshot?.documentChanges.forEach({ (change) in
+                if change.type == .added {
+                    let document = change.document
+                    let uid = document.documentID
+                    let trip = Trip(passengerUid: uid, dictionary: document.data())
+                    completion(trip)
+                }
+            })
+        }
+    }
+    
+    func observeTripCancelled(trip: Trip, completion: @escaping() -> Void) {
+        REF_TRIPS.addSnapshotListener { (snapshot, error) in
+            snapshot?.documentChanges.forEach({ (change) in
+                if change.type == .removed {
+                    guard let uid = Auth.auth().currentUser?.uid else { return }
+                    guard let driverUid = change.document.data()["driverUid"] as? String else { return }
+                    if driverUid == uid {
+                        completion()
+                    }
+                }
+            })
         }
     }
     
@@ -71,5 +88,32 @@ struct Service {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let values = ["driverUid": uid, "state": TripState.accepted.rawValue] as [String: Any]
         REF_TRIPS.document(trip.passengerUid).updateData(values, completion: completion)
+    }
+    
+    func observeCurrentTrip(completion: @escaping(Trip) -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        REF_TRIPS.document(uid).addSnapshotListener { (snapshot, error) in
+            guard let uid = snapshot?.documentID else { return }
+            guard let data = snapshot?.data() else { return }
+            let trip = Trip(passengerUid: uid, dictionary: data)
+            completion(trip)
+        }
+    }
+    
+    func cancelTrip(completion: ((Error?) -> Void)?) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        REF_TRIPS.document(uid).delete(completion: completion)
+    }
+    
+    func updateDriverLocation(location: CLLocation) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let geoFirestore = GeoFirestore(collectionRef: REF_DRIVER_LOCATIONS)
+        geoFirestore.setLocation(location: location, forDocumentWithID: uid)
+    }
+    
+    func updateTripState(trip: Trip, state: TripState, completion: ((Error?) -> Void)?) {
+        REF_TRIPS.document(trip.passengerUid).updateData(["state": state.rawValue], completion: completion)
+        
     }
 }

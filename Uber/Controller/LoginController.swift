@@ -9,6 +9,10 @@
 import UIKit
 import Firebase
 
+protocol setupHomeControllerDelegate: class {
+    func configureUI()
+}
+
 class LoginController: UIViewController {
     
     //MARK: - Properties
@@ -68,7 +72,7 @@ class LoginController: UIViewController {
                 print(error.localizedDescription)
                 return
             }
-            
+            NotificationCenter.default.post(.init(name: NSNotification.Name(rawValue: "NotificationID")))
             self.dismiss(animated: true, completion: nil)
         }
     }

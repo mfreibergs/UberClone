@@ -9,10 +9,15 @@
 import UIKit
 import MapKit
 
+protocol PickupControllerDelegate: class {
+    func didAcceptTrip(_ trip: Trip)
+}
+
 class PickupController: UIViewController {
     
     // MARK: - Properties
     
+    var delegate: PickupControllerDelegate?
     private let mapView = MKMapView()
     let trip: Trip
     
@@ -71,7 +76,7 @@ class PickupController: UIViewController {
     
     @objc func handleAcceptTrip() {
         Service.shared.acceptTrip(trip: trip) { err in
-            self.dismiss(animated: true, completion: nil)
+            self.delegate?.didAcceptTrip(self.trip)
         }
     }
     // MARK: - API
@@ -82,9 +87,7 @@ class PickupController: UIViewController {
         let region = MKCoordinateRegion(center: trip.pickupCoordinates, latitudinalMeters: 1000, longitudinalMeters: 1000)
         mapView.setRegion(region, animated: false)
         
-        let anno = MKPointAnnotation()
-        anno.coordinate = trip.pickupCoordinates
-        mapView.addAnnotation(anno)
+        mapView.addAnnotationAndSelect(forCoordinate: trip.pickupCoordinates)
     }
     
     func configureUI() {

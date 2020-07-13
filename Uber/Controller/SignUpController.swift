@@ -60,7 +60,7 @@ class SignUpController: UIViewController {
     }()
     
     private let accountTypeSegmentedControl: UISegmentedControl = {
-        let sc = UISegmentedControl(items: ["Rider", "Driver"])
+        let sc = UISegmentedControl(items: ["Passenger", "Driver"])
         sc.backgroundColor = .backgroundColor
         sc.tintColor = UIColor(white: 1, alpha: 0.87)
         sc.selectedSegmentIndex = 0
@@ -109,8 +109,7 @@ class SignUpController: UIViewController {
             }
             REF_USERS.document(uid).setData(values) { (err) in
                 if let err = err { print("DEBUG: Error writing documents: \(err)"); return }
-                let controller = HomeController()
-                controller.fetchUserData()
+                NotificationCenter.default.post(.init(name: NSNotification.Name(rawValue: "NotificationID")))
                 self.dismiss(animated: true, completion: nil)
             }
         }

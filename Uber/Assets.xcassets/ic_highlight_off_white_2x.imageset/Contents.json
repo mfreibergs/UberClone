@@ -1,11 +1,6 @@
 {
   "images" : [
     {
-      "filename" : "ic_highlight_off_white.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
       "idiom" : "universal",
       "scale" : "1x"
     },

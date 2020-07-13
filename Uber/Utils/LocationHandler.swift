@@ -27,7 +27,4 @@ class LocationHandler: NSObject, CLLocationManagerDelegate {
         }
     }
     
-//    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-//        print("DEBUG: LOCATION IS \(self.location)")
-//    }
 }
