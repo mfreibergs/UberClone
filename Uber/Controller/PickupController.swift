@@ -59,7 +59,7 @@ class PickupController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("DEBUG: Trip passenger is \(trip.passengerUid)")
+        print("DEBUG: Trip passenger is \(trip.destinationCoordinates)")
         configureUI()
         configureMapView()
     }
@@ -75,7 +75,7 @@ class PickupController: UIViewController {
     }
     
     @objc func handleAcceptTrip() {
-        Service.shared.acceptTrip(trip: trip) { err in
+        DriverService.shared.acceptTrip(trip: trip) { err in
             self.delegate?.didAcceptTrip(self.trip)
         }
     }

@@ -182,7 +182,7 @@ class RideActionView: UIView {
     private func configureUI(withConfig config: RideActionViewConfiguration) {
         switch config {
         case .requestRide:
-            
+            actionButton.isEnabled = true
             buttonAction = .requestRide
             actionButton.setTitle(buttonAction.description, for: .normal)
         case .tripAccepted:
@@ -222,6 +222,7 @@ class RideActionView: UIView {
                 buttonAction = .getDirections
                 actionButton.setTitle(buttonAction.description, for: .normal)
             }
+            addressLabel.text = ""
             titleLabel.text = "En Route to Destination"
         case .endTrip:
             
