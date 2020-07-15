@@ -98,6 +98,7 @@ class SignUpController: UIViewController {
         
         Auth.auth().createUser(withEmail: email, password: password) { (data, error) in
             if let error = error { print(error.localizedDescription) }
+            NotificationCenter.default.post(.init(name: NSNotification.Name(rawValue: "NotificationID")))
             guard let uid = data?.user.uid else { return }
             let values: [String: Any] = ["email": email,
                                          "fullName": fullName,

@@ -27,22 +27,13 @@ private enum AnnotationType: String {
     case destination
 }
 
+protocol HomeControllerDelegate: class {
+    func handleMenuToggle()
+}
+
 class HomeController: UIViewController {
     
     //MARK: - Properties
-    
-    private let signOutButton: UIButton = {
-        let button = UIButton().authButton(withTitle: "Sign Out")
-        button.addTarget(self, action: #selector(signOut), for: .touchUpInside)
-        return button
-    }()
-    
-    private let actionButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(#imageLiteral(resourceName: "baseline_menu_black_36dp").withRenderingMode(.alwaysOriginal), for: .normal)
-        button.addTarget(self, action: #selector(actionButtonPressed), for: .touchUpInside)
-        return button
-    }()
     
     private let mapView = MKMapView()
     private let locationManager = LocationHandler.shared.locationManager
@@ -53,10 +44,13 @@ class HomeController: UIViewController {
     private let tableView = UITableView()
     private var searchResults = [MKPlacemark]()
     
-    private var user: User? {
+    weak var delegate: HomeControllerDelegate?
+    
+    var user: User? {
         didSet {
-            locationInputView.user = user
+            print("DEBUG: Does it reach home controller? \(user?.fullName)")
             if user?.accountType == .passenger {
+                locationInputView.user = user
                 fetchDrivers()
                 configureInputActivationView()
                 observeCurrentTrip()
@@ -72,10 +66,10 @@ class HomeController: UIViewController {
             
             if user.accountType == .driver {
                 guard let trip = trip else { return }
-                 let controller = PickupController(trip: trip)
+                let controller = PickupController(trip: trip)
                 controller.delegate = self
-                 controller.modalPresentationStyle = .fullScreen
-                 self.present(controller, animated: true)
+                controller.modalPresentationStyle = .fullScreen
+                self.present(controller, animated: true)
             } else {
                 print("DEBUG: Show ride action view for accepted trip")
             }
@@ -87,13 +81,18 @@ class HomeController: UIViewController {
     private var actionButtonConfig = ActionButtonConfiguration()
     private var route: MKRoute?
     
+    private let actionButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(#imageLiteral(resourceName: "baseline_menu_black_36dp").withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(actionButtonPressed), for: .touchUpInside)
+        return button
+    }()
+    
     //MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotificationCenter.default.addObserver(self, selector: #selector(self.checkIfUserIsLoggedIn), name: NSNotification.Name(rawValue: "NotificationID"), object: nil)
-//        signOut()
-        checkIfUserIsLoggedIn()
+        configureUI()
         enableLocationServices()
     }
     
@@ -182,7 +181,7 @@ class HomeController: UIViewController {
         }
     }
     
-    //MARK: - Drivers API
+    //MARK: - Driver API
 
     func observeTrips() {
         DriverService.shared.observeTrips { trip in
@@ -203,38 +202,14 @@ class HomeController: UIViewController {
             }
         }
     }
-    
-    //MARK: - Shared API
-    
-    func fetchUserData() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        Service.shared.fetchUserData(uid: uid) { user in
-            self.user = user
-        }
-    }
 
-    @objc func checkIfUserIsLoggedIn() {
-        if Auth.auth().currentUser == nil {
-            DispatchQueue.main.async {
-                let nav = UINavigationController(rootViewController: LoginController())
-                nav.modalPresentationStyle = .fullScreen
-                self.present(nav, animated: false)
-            }
-            print("DEBUG: User not logged in")
-        } else {
-            print("DEBUG: User logged in")
-            configureUI()
-            fetchUserData()
-            NotificationCenter.default.removeObserver(self)
-        }
-    }
     
     // MARK: - Selectors
     
     @objc func actionButtonPressed() {
         switch actionButtonConfig {
         case .showMenu:
-            print("DEBUG: Show menu")
+            delegate?.handleMenuToggle()
         case .dismissActionView:
             removeAnnotationsAndOverlays()
             mapView.showAnnotations(mapView.annotations, animated: true)
@@ -243,17 +218,6 @@ class HomeController: UIViewController {
                 self.configureActionButton(config: .showMenu)
                 self.animateRideActionView(shouldShow: false)
             }
-        }
-    }
-    
-    @objc func signOut() {
-        do {
-            try Auth.auth().signOut()
-            let nav = UINavigationController(rootViewController: LoginController())
-            nav.modalPresentationStyle = .fullScreen
-            self.present(nav, animated: true)
-        } catch {
-            print("DEBUG: Error signing out")
         }
     }
     
