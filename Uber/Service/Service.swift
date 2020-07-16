@@ -115,6 +115,12 @@ struct PassengerService {
         }
     }
     
+    func saveLocation(locationString: String, type: LocationType, completion: ((Error?) -> Void)?) {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let key: String = type == .home ? "homeLocation" : "workLocation"
+        REF_USERS.document(uid).updateData([key: locationString], completion: completion)
+    }
+    
 }
 
 // MARK: - Shared Service
